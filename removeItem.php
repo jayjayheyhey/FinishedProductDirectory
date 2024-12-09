@@ -3,7 +3,15 @@ session_start();
 include("connect.php"); // Include database connection
 include("products_table.php");
 
-$message = ""; // Initialize the message variable
+$fullURL = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$errorMessage = "";
+
+if (strpos($fullURL, "code=removed") !== false) { 
+    $errorMessage = "Filter successfully removed.";
+} else if (strpos($fullURL, "code=NULL") !== false) { 
+    $errorMessage = "Filter code not found.";
+}
+
 $oemCode = ""; // Initialize OEM Code variable
 $partName = ""; // To hold the name of the part being removed
 $confirmation = false; // To track whether the confirmation step should be shown
@@ -17,7 +25,7 @@ if ($result) {
         $oemCodes[] = $row['oemCode'];
     }
 } else {
-    $message = "Error fetching OEM codes: " . htmlspecialchars($conn->error);
+    $errorMessage = "Error fetching OEM codes: " . htmlspecialchars($conn->error);
 }
 
 // Handle the form submission
@@ -42,19 +50,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt->bind_param("s", $oemCode);
 
                 if ($stmt->execute()) {
-                    $message = "Product successfully removed.";
+                    $successMessage = "Product successfully removed.";
                 } else {
-                    $message = "Error deleting product: " . htmlspecialchars($conn->error);
+                    $errorMessage = "Error deleting product: " . htmlspecialchars($conn->error);
                 }
             } else {
                 // Trigger confirmation step
                 $confirmation = true;
             }
         } else {
-            $message = "Product not found.";
+            $errorMessage = "Product not found.";
         }
     } else {
-        $message = "OEM Code is required.";
     }
 }
 ?>
@@ -66,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style2.css">
     <link rel="stylesheet" href="tablestyle.css">
     <title>Remove Product</title>
 </head>
@@ -73,14 +81,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="ShowTableContainer" id="removeItem">
         <h1 class="form-title">Remove Product</h1>
         
-        <!-- Display success/error message -->
-        <?php if (!empty($message)) { ?>
-            <p class="error-message"><?php echo htmlspecialchars($message); ?></p>
-        <?php } ?>
+        <!-- Display success/error errorMessage -->
+        <?php if (!empty($successMessage)): ?>
+            <p class="popup" id="success"><?php echo $successMessage; ?></p>
+        <?php endif; ?>
+        <?php if (!empty($errorMessage)): ?>
+            <p class="popup"><?php echo $errorMessage; ?></p>
+        <?php endif; ?>
         
         <!-- Show the confirmation form after OEM Code input -->
         <?php if ($confirmation) { ?>
-            <p>Are you sure you want to delete this product?</p>
+            <p style= "color: hsl(327,90%,28%);">Are you sure you want to delete this product?</p>
             <p><strong>OEM Code:</strong> <?php echo htmlspecialchars($oemCode); ?></p>
             <p><strong>Part Name:</strong> <?php echo htmlspecialchars($partName); ?></p>
             <form method="post" action="">

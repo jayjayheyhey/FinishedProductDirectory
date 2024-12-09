@@ -22,18 +22,21 @@ include("products_table.php");
 <body>
     <div class="container" id=dashboard>
         <h1 class="form-title">Finished Product Item Catalogue</h1>
-        <form method ="post" action="addProduct.php">
-            <input type="submit" class="btn" value="Add product" name="addProductButton">
-        </form>
-        <form method="post" action="removeItem.php">
-            <input type="submit" class="btn" value="Remove Product" name="removeProductButton">
-        </form>
-        <form method ="post" action="editProduct.php">
-            <input type="submit" class="btn" value="Edit Product" name="editProductButton">
-        </form>
-        <form method ="post">
-            <input type="text" class="form-control" id="live_search" autocomplete="off" placeholder="Search ... ">
-        </form>
+        <div class="form-container">
+            <form method="post" action="addProduct.php">
+                <input type="submit" class="btn" value="Add product" name="addProductButton">
+            </form>
+            <form method="post" action="removeItem.php">
+                <input type="submit" class="btn" value="Remove Product" name="removeProductButton">
+            </form>
+            <form method="post" action="editProduct.php">
+                <input type="submit" class="btn" value="Edit Product" name="editProductButton">
+            </form>
+            <form method="post">
+                <input type="text" class="form-control" id="live_search" autocomplete="off" placeholder="Search ... ">
+            </form>
+        </div>
+
 
         <div id="searchresult"></div>
          <!-- Display Filters Table -->
