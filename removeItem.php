@@ -1,60 +1,60 @@
 <?php
 session_start();
 include("connect.php"); // Include database connection
-include("filters_table.php");
+include("products_table.php");
 
 $message = ""; // Initialize the message variable
-$FilterCode = ""; // Initialize FilterCode variable
-$FilterName = ""; // To hold the name of the filter being removed
+$oemCode = ""; // Initialize OEM Code variable
+$partName = ""; // To hold the name of the part being removed
 $confirmation = false; // To track whether the confirmation step should be shown
 
-// Fetch Filter Codes from the database
-$filterCodes = [];
-$query = "SELECT DISTINCT FilterCode FROM filters";
+// Fetch OEM Codes from the database
+$oemCodes = [];
+$query = "SELECT DISTINCT oemCode FROM finished";
 $result = $conn->query($query);
 if ($result) {
     while ($row = $result->fetch_assoc()) {
-        $filterCodes[] = $row['FilterCode'];
+        $oemCodes[] = $row['oemCode'];
     }
 } else {
-    $message = "Error fetching filter codes: " . htmlspecialchars($conn->error);
+    $message = "Error fetching OEM codes: " . htmlspecialchars($conn->error);
 }
 
 // Handle the form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['FilterCode']) && !empty($_POST['FilterCode'])) {
+    if (isset($_POST['oemCode']) && !empty($_POST['oemCode'])) {
         // Sanitize user input
-        $FilterCode = $conn->real_escape_string($_POST['FilterCode']);
+        $oemCode = $conn->real_escape_string($_POST['oemCode']);
 
-        // Check if the filter exists in the database
-        $stmt = $conn->prepare("SELECT FilterName FROM filters WHERE FilterCode = ?");
-        $stmt->bind_param("s", $FilterCode);
+        // Check if the item exists in the database
+        $stmt = $conn->prepare("SELECT name FROM finished WHERE oemCode = ?");
+        $stmt->bind_param("s", $oemCode);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            $FilterName = $row['FilterName'];
+            $partName = $row['name'];
 
-            // If confirmation is provided, delete the filter
+            // If confirmation is provided, delete the item
             if (isset($_POST['confirmDelete']) && $_POST['confirmDelete'] === 'Yes') {
-                $stmt = $conn->prepare("DELETE FROM filters WHERE FilterCode = ?");
-                $stmt->bind_param("s", $FilterCode);
+                $stmt = $conn->prepare("DELETE FROM finished WHERE oemCode = ?");
+                $stmt->bind_param("s", $oemCode);
 
                 if ($stmt->execute()) {
-                    $message = "Filter successfully removed.";
+                    $message = "Product successfully removed.";
                 } else {
-                    $message = "Error deleting filter: " . htmlspecialchars($conn->error);
+                    $message = "Error deleting product: " . htmlspecialchars($conn->error);
                 }
             } else {
                 // Trigger confirmation step
                 $confirmation = true;
             }
         } else {
-            $message = "Filter not found.";
+            $message = "Product not found.";
         }
     } else {
-        $message = "Filter Code is required.";
+        $message = "OEM Code is required.";
     }
 }
 ?>
@@ -67,48 +67,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="tablestyle.css">
-    <title>Remove Filter</title>
+    <title>Remove Product</title>
 </head>
 <body>
     <div class="ShowTableContainer" id="removeItem">
-        <h1 class="form-title">Remove Filter</h1>
+        <h1 class="form-title">Remove Product</h1>
         
         <!-- Display success/error message -->
         <?php if (!empty($message)) { ?>
             <p class="error-message"><?php echo htmlspecialchars($message); ?></p>
         <?php } ?>
         
-        <!-- Show the confirmation form after FilterCode input -->
+        <!-- Show the confirmation form after OEM Code input -->
         <?php if ($confirmation) { ?>
-            <p>Are you sure you want to delete this filter?</p>
-            <p><strong>Filter Code:</strong> <?php echo htmlspecialchars($FilterCode); ?></p>
-            <p><strong>Filter Name:</strong> <?php echo htmlspecialchars($FilterName); ?></p>
+            <p>Are you sure you want to delete this product?</p>
+            <p><strong>OEM Code:</strong> <?php echo htmlspecialchars($oemCode); ?></p>
+            <p><strong>Part Name:</strong> <?php echo htmlspecialchars($partName); ?></p>
             <form method="post" action="">
-                <input type="hidden" name="FilterCode" value="<?php echo htmlspecialchars($FilterCode); ?>">
+                <input type="hidden" name="oemCode" value="<?php echo htmlspecialchars($oemCode); ?>">
                 <input type="submit" class="btn" value="Yes" name="confirmDelete">
             </form>
             <form method="get" action="removeItem.php">
-                <button type="submit" class="btn">Cancel</button>
+                <input type="submit" class="btn" value="Cancel">
             </form>
         <?php } else { ?>
-            <!-- Form for entering the FilterCode -->
+            <!-- Form for entering the OEM Code -->
             <form method="post" action="">
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
-                    <input list="filterCodes" name="FilterCode" id="FilterCode" placeholder="Filter Code" required>
-                    <datalist id="filterCodes">
-                        <?php foreach ($filterCodes as $code): ?>
+                    <input list="oemCodes" name="oemCode" id="oemCode" placeholder="OEM Code" required>
+                    <datalist id="oemCodes">
+                        <?php foreach ($oemCodes as $code): ?>
                             <option value="<?php echo htmlspecialchars($code); ?>">
                         <?php endforeach; ?>
                     </datalist>
-                    <label for="FilterCode">Filter Code</label>
+                    <label for="oemCode">OEM Code</label>
                 </div>
-                <input type="submit" class="btn" value="Delete Filter">
+                <input type="submit" class="btn" value="Delete Product">
             </form>
         <?php } ?>
         
         <!-- Back to dashboard button -->
-        <form method="post" action="homepage.php">
+        <form method="post" action="dashboard.php">
             <input type="submit" class="btn" value="Back to Dashboard">
         </form>
 

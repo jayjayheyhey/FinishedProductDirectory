@@ -14,11 +14,11 @@ if(isset($_GET['error']) && $_GET['error'] == 1) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container" id="signIn">
-        <h1 class="form-title">Sign In</h1>
-        <form method="post" action="register.php">
+    <div class="container" id="logIn">
+        <h1 class="form-title">Log In</h1>
+        <form method="post" action="login.php">
           <div class="input-group">
-              <i class="fas fa-envelope"></i>
+              <i class="fas fa-user"></i>
               <input type="text" name="username" id="username" placeholder="Username" required>
               <label for="username">Username</label>
           </div>
@@ -27,7 +27,7 @@ if(isset($_GET['error']) && $_GET['error'] == 1) {
               <input type="password" name="password" id="password" placeholder="Password" required>
               <label for="password">Password</label>
           </div>
-         <input type="submit" class="btn" value="Sign In" name="signIn">
+         <input type="submit" class="btn" value="Log In" name="signIn">
         </form>
     </div>
       <script src="script.js"></script>

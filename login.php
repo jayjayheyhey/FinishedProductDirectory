@@ -12,7 +12,7 @@ if(isset($_POST['signIn'])){
     session_start();
     $row=$result->fetch_assoc();
     $_SESSION['username']=$row['username'];
-    header("Location: homepage.php");
+    header("Location: dashboard.php");
     exit();
    }
    else{
