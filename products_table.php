@@ -7,8 +7,8 @@ function renderFiltersTable($conn) {
                 <tr>
                     <th>OEM Code</th>
                     <th>Part Number</th>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th>Product Name</th>
+                    <th>Dimensions</th>
                     <th>Pictures</th>
                 </tr>
             </thead>
@@ -20,11 +20,15 @@ function renderFiltersTable($conn) {
 
                 if ($result && $result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $dimensions = "{$row['outsideDiameter']}{$row['outsideDiameterUnit']} x
+                                       {$row['insideDiameter']}{$row['insideDiameterUnit']} x
+                                       {$row['height']}{$row['heightUnit']}";
+
                         echo "<tr>";
                         echo "<td>" . htmlspecialchars($row['oemCode'] ?? 'N/A') . "</td>";
                         echo "<td>" . htmlspecialchars($row['partNumber'] ?? 'N/A') . "</td>";
                         echo "<td>" . htmlspecialchars($row['name'] ?? 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($row['description'] ?? 'N/A') . "</td>";
+                        echo "<td>" . htmlspecialchars($dimensions) . "</td>";  
                         echo "<td><img src='" . htmlspecialchars($row['pictures'] ?? 'uploads/default.jpg') . "' alt='Product Image' width='100'></td>";
                         echo "</tr>";
                     }

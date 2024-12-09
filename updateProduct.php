@@ -6,7 +6,14 @@ if(isset($_POST['updateButton'])){
     $oemCode = $_POST['code'];
     $partNumber = $_POST['pName'];
     $productName = $_POST['name'];
-    $description = $_POST['description'];
+    $outsideDiameter = $_POST['odiam'];
+    $outsideDiameterUnit = $_POST['odiamUnit'];
+
+    $insideDiameter = $_POST['indiam'];
+    $insideDiameterUnit = $_POST['indiamUnit'];
+
+    $Height = $_POST['height'];
+    $HeightUnit = $_POST['heightUnit'];
 
     // Handle file upload (assuming `pictures` is the file input name)
     $targetDir = "uploads/"; // Define your upload directory
@@ -60,12 +67,17 @@ if(isset($_POST['updateButton'])){
     $updateQuery = "UPDATE finished 
                     SET partNumber = ?, 
                         name = ?, 
-                        description = ?, 
+                        outsideDiameter = ?, 
+                        outsideDiameterUnit = ?,
+                        insideDiameter = ?, 
+                        insideDiameterUnit = ?,
+                        height = ?, 
+                        heightUnit = ?,
                         pictures = ?
                     WHERE oemCode = ?";
 
     $stmt = $conn->prepare($updateQuery);
-    $stmt->bind_param("sssss", $partNumber, $productName, $description, $targetFile, $oemCode);
+    $stmt->bind_param("ssssssssss", $partNumber, $productName, $outsideDiameter, $outsideDiameterUnit, $insideDiameter, $insideDiameterUnit, $Height, $HeightUnit, $targetFile, $oemCode);
 
     if($stmt->execute()){
         echo '<script>

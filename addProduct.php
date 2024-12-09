@@ -7,7 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submitButton'])) {
     $oemCode = $_POST['code'];
     $partNumber = $_POST['pName'];
     $productName = $_POST['name'];
-    $description = $_POST['description'];
+    $outsideDiameter = $_POST['odiam'];
+    $outsideDiameterUnit = $_POST['odiamUnit'];
+
+    $insideDiameter = $_POST['indiam'];
+    $insideDiameterUnit = $_POST['indiamUnit'];
+
+    $Height = $_POST['height'];
+    $HeightUnit = $_POST['heightUnit'];
 
     // Handle file upload
     $targetDir = "uploads/"; // Define your upload directory
@@ -46,19 +53,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submitButton'])) {
     }
 
     // Insert data into the database
-    $insertQuery = "INSERT INTO finished (oemCode, partNumber, name, description, pictures) 
-                    VALUES (?, ?, ?, ?, ?)";
+    $insertQuery = "INSERT INTO finished (oemCode, partNumber, name, outsideDiameter, outsideDiameterUnit, insideDiameter, insideDiameterUnit, Height, HeightUnit, pictures) 
+                    VALUES (?, ?, ?, ?, ?,?,?,?,?,?)";
     $stmt = $conn->prepare($insertQuery);
-    $stmt->bind_param("sssss", $oemCode, $partNumber, $productName, $description, $targetFile);
+    $stmt->bind_param("ssssssssss", $oemCode, $partNumber, $productName, $outsideDiameter, $outsideDiameterUnit, $insideDiameter, $insideDiameterUnit, $Height, $HeightUnit, $targetFile);
 
     if ($stmt->execute()) {
         echo '<script>
-            alert("Item successfully added.");
+            alert("Product successfully added.");
             window.location.href = "dashboard.php";
         </script>';
     } else {
         echo '<script>
-            alert("Error adding item: ' . $conn->error . '");
+            alert("Error adding product: ' . $conn->error . '");
             window.history.back();
         </script>';
     }
@@ -75,11 +82,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submitButton'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <title>Add Item</title>
+    <link rel="stylesheet" href="select.css">
+    <title>Add Product</title>
 </head>
 <body>
     <div class="container" id="addInterface" style="display:block;">
-        <h1 class="form-title">Add Item</h1>
+        <h1 class="form-title">Add Product</h1>
         <form method="post" action="" enctype="multipart/form-data">
             <div class="input-group">
                 <i class="fas fa-lock"></i>
@@ -97,15 +105,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submitButton'])) {
                 <label for="name">Product Name</label>
             </div>
             <div class="input-group">
-                <textarea id="description" name="description" placeholder="Description" rows="4" required></textarea>
-                <label for="description">Description</label>
+                <i class="fas fa-ruler"></i>
+                <input type="number" name="odiam" id="odiam" placeholder="Outside Diameter" required step="0.01">
+                <label for="odiam">Outside Diameter</label>
+                <select name="odiamUnit" id="odiamUnit" required>
+                    <option value="cm">cm</option>
+                    <option value="in">in</option>
+                    <option value="mm">mm</option>
+                    <option value="ft">ft</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-ruler"></i>
+                <input type="number" name="indiam" id="indiam" placeholder="Inside Diameter" required step="0.01">
+                <label for="indiam">Inside Diameter</label>
+                <select name="indiamUnit" id="indiamUnit" required>
+                    <option value="cm">cm</option>
+                    <option value="in">in</option>
+                    <option value="mm">mm</option>
+                    <option value="ft">ft</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-ruler"></i>
+                <input type="number" name="height" id="height" placeholder="Height" required step="0.01">
+                <label for="height">Height</label>
+                <select name="heightUnit" id="heightUnit" required>
+                    <option value="cm">cm</option>
+                    <option value="in">in</option>
+                    <option value="mm">mm</option>
+                    <option value="ft">ft</option>
+                </select>
             </div>
             <div class="input-group">
                 <i class="fas fa-image"></i>
                 <input type="file" name="pictures" id="pictures" accept="image/*" required>
                 <label for="pictures">Pictures</label>
             </div>
-            <input type="submit" class="btn" value="Submit Item" name="submitButton">
+            <input type="submit" class="btn" value="Submit Product" name="submitButton">
         </form>
         <form method="post" action="dashboard.php">
             <input type="submit" class="btn" value="Back to Dashboard">

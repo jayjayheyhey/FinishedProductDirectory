@@ -45,6 +45,7 @@ if ($result->num_rows > 0) {
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="tablestyle.css">
     <link rel="stylesheet" href="edit.css">
+    <link rel="stylesheet" href="select.css">
 
     <title>Manage Filter</title>
 </head>
@@ -86,7 +87,7 @@ if ($result->num_rows > 0) {
         </script>
         <div class="container" id="editInterface" style="display:block;">
             <h1 class="form-title">UPDATE Filter</h1>
-            <form method="post" action="updateFilter.php" enctype="multipart/form-data">
+            <form method="post" action="updateProduct.php" enctype="multipart/form-data">
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
                     <input type="text" name="code" id="code" placeholder="OEM Code" required value="<?php echo isset($row['oemCode']) ? $row['oemCode'] : ''; ?>" disabled>
@@ -105,9 +106,40 @@ if ($result->num_rows > 0) {
                     <label for="name">Edit Product Name:</label>
                 </div>
                 <div class="input-group">
-                    <textarea id="description" name="description" placeholder="Description" rows="4"><?php echo isset($row['description']) ? $row['description'] : ''; ?></textarea>
-                    <label for="description">Description</label>
-                </div>
+                <i class="fas fa-ruler"></i>
+                <input type="number" name="odiam" id="odiam" placeholder="Outside Diameter" required step="0.01" value="<?php echo isset($row['outsideDiameter']) ? $row['outsideDiameter'] : ''; ?>">
+                <label for="odiam">Outside Diameter</label>
+                <select name="odiamUnit" id="odiamUnit" required value="<?php echo isset($row['outsideDiameterUnit']) ? $row['outsideDiameterUnit'] : ''; ?>">
+                    <option value="cm">cm</option>
+                    <option value="in">in</option>
+                    <option value="mm">mm</option>
+                    <option value="ft">ft</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-ruler"></i>
+                <input type="number" name="indiam" id="indiam" placeholder="Inside Diameter" required step="0.01" value="<?php echo isset($row['insideDiameter']) ? $row['insideDiameter'] : ''; ?>">
+                <label for="indiam">Inside Diameter</label>
+                <select name="indiamunit" id="indiamUnit" required value="<?php echo isset($row['insideDiameterUnit']) ? $row['insideDiameterUnit'] : ''; ?>">
+                    <option value="cm">cm</option>
+                    <option value="in">in</option>
+                    <option value="mm">mm</option>
+                    <option value="ft">ft</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-ruler"></i>
+                <input type="number" name="height" id="height" placeholder="Height" required step="0.01" value="<?php echo isset($row['height']) ? $row['height'] : ''; ?>">
+                <label for="height">Height</label>
+                <select name="heightUnit" id="heightUnit" required value="<?php echo isset($row['heightUnit']) ? $row['heightUnit'] : ''; ?>">
+                    <option value="cm">cm</option>
+                    <option value="in">in</option>
+                    <option value="mm">mm</option>
+                    <option value="ft">ft</option>
+                </select>
+            </div>
                 <div class="input-group">
                     <i class="fas fa-image"></i>
                     <input type="file" name="pictures" id="pictures" accept="image/*">
