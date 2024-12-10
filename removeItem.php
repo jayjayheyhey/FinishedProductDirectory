@@ -3,15 +3,6 @@ session_start();
 include("connect.php"); // Include database connection
 include("products_table.php");
 
-$fullURL = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-$errorMessage = "";
-
-if (strpos($fullURL, "code=removed") !== false) { 
-    $errorMessage = "Filter successfully removed.";
-} else if (strpos($fullURL, "code=NULL") !== false) { 
-    $errorMessage = "Filter code not found.";
-}
-
 $oemCode = ""; // Initialize OEM Code variable
 $partName = ""; // To hold the name of the part being removed
 $confirmation = false; // To track whether the confirmation step should be shown

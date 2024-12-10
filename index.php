@@ -1,6 +1,7 @@
 <?php
 if(isset($_GET['error']) && $_GET['error'] == 1) {
-    echo '<script>alert("Not Found, Incorrect Email or Password");</script>';
+    $errorMessage = "Not Found, Incorrect Email or Password.";
+
 }
 ?>
 
@@ -12,10 +13,14 @@ if(isset($_GET['error']) && $_GET['error'] == 1) {
     <title>Enterfil Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style2.css">
 </head>
 <body>
     <div class="container" id="logIn">
         <h1 class="form-title">Log In</h1>
+        <?php if (!empty($errorMessage)): ?>
+            <p class="popup"><?php echo $errorMessage; ?></p>
+        <?php endif; ?>
         <form method="post" action="login.php">
           <div class="input-group">
               <i class="fas fa-user"></i>
